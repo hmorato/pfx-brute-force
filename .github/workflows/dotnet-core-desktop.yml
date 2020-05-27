@@ -114,8 +114,9 @@ jobs:
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
     - name: Upload build artifacts
-      working-directory: src/PfxBruteForce.UI/
       uses: actions/upload-artifact@v1
       with:
         name: MSIX Package
         path: ${{ env.Wap_Project_Directory }}\AppPackages
+        working-directory: src/PfxBruteForce.UI/
+
