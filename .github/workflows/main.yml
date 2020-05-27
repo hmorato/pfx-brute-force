@@ -25,7 +25,7 @@ jobs:
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
   
-    - run: msbuild
+    - run: msbuild /p:Configuration=Release
       working-directory: src/PfxBruteForce.UI
     
     - name: Upload a Build Artifact
