@@ -79,16 +79,19 @@ jobs:
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
+      working-directory: src/PfxBruteForce.UI/
       run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      working-directory: src/PfxBruteForce.UI/
       env:
         Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
+      working-directory: src/PfxBruteForce.UI/
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
         $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
@@ -96,6 +99,7 @@ jobs:
 
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
+      working-directory: src/PfxBruteForce.UI/
       run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
       env:
         Appx_Bundle: Always
@@ -105,10 +109,12 @@ jobs:
 
     # Remove the pfx
     - name: Remove the pfx
+      working-directory: src/PfxBruteForce.UI/
       run: Remove-Item -path $env:Wap_Project_Directory\$env:Signing_Certificate
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
     - name: Upload build artifacts
+      working-directory: src/PfxBruteForce.UI/
       uses: actions/upload-artifact@v1
       with:
         name: MSIX Package
